@@ -1,39 +1,45 @@
-FROM i386/debian:stretch-slim
+FROM beamdog/nwserver:8152
 LABEL maintainer "niv@beamdog.com"
 
-RUN apt-get update && \
-  apt-get --no-install-recommends -y install \
-    libc6:i386 libstdc++6:i386 && \
-  rm -r /var/cache/apt /var/lib/apt/lists
 
-# Data layout:
-# /nwn/data (/data/*.key) = distro data, minimized
-# /nwn/home               = readonly mounted from outside
-# /nwn/run                = runtime directory
+RUN apt-get update
 
-RUN mkdir -p /nwn/data
-RUN mkdir -p /nwn/home
-RUN mkdir -p /nwn/run
+# This is needed so openjdk installs properly.
+RUN mkdir -p mkdir -p /usr/share/man/man1
+RUN apt-get -y install libmariadbclient18:i386
 
-# Copy them in separate layers so we can store the big bad data
-# layer more efficiently.
-COPY /data/data /nwn/data/data
+RUN apt-get -y install unzip
+RUN mkdir -p /nwn/nwnx
+ADD https://code.nwnx.io/nwnxee/unified/-/jobs/artifacts/build8152/download?job=build /nwn/nwnx/temp
+RUN unzip -j /nwn/nwnx/temp -d /nwn/nwnx
+RUN rm /nwn/nwnx/temp
+RUN apt-get -y purge unzip
 
-ENV NWN_ARCH linux-x86
+RUN rm -r /var/cache/apt /var/lib/apt/lists
 
-COPY /data/bin/${NWN_ARCH} /nwn/data/bin/${NWN_ARCH}
-RUN chmod +x /nwn/data/bin/${NWN_ARCH}/nwserver-linux
 
-COPY /run-server.sh /prep-nwn-ini.awk /prep-nwnplayer-ini.awk /nwn/
-RUN chmod +x /nwn/run-server.sh
+# Don't mirror logs to stdout, NWNX_ServerLogRedirector takes care of that.
+ENV NWN_TAIL_LOGS=n
 
-# /nwn/home: This should be mounted by the user.
-VOLUME /nwn/home
+ENV NWNX_CORE_LOAD_PATH=/nwn/nwnx/
+ENV NWN_LD_PRELOAD=/nwn/nwnx/NWNX_Core.so
 
-EXPOSE ${NWN_PORT:-5121}/udp
+ENV NWNX_CORE_SKIP=n
 
-ENV NWN_TAIL_LOGS=y
-ENV NWN_EXTRA_ARGS="-userdirectory /nwn/run"
+# Plugins: The ones needed to make docker usage pleasant or safe are
+# enabled by default:
+ENV NWNX_SERVERLOGREDIRECTOR_SKIP=n
 
-WORKDIR /nwn/data/bin/${NWN_ARCH}
-ENTRYPOINT ["/bin/bash", "/nwn/run-server.sh"]
+# The rest is only enabled on user request.
+ENV NWNX_ADMINISTRATION_SKIP=y \
+    NWNX_BEHAVIOURTREE_SKIP=y \
+    NWNX_CHAT_SKIP=y \
+    NWNX_CREATURE_SKIP=y \
+    NWNX_DATA_SKIP=y \
+    NWNX_EVENTS_SKIP=y \
+    NWNX_METRICS_INFLUXDB_SKIP=y \
+    NWNX_OBJECT_SKIP=y \
+    NWNX_PLAYER_SKIP=y \
+    NWNX_SQL_SKIP=y \
+    NWNX_THREADWATCHDOG_SKIP=y \
+    NWNX_TRACKING_SKIP=y
