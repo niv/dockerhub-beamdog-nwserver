@@ -5,15 +5,28 @@ set -e
 ROHOMEPATH=/nwn/home
 HOMEPATH=/nwn/run
 
-# Let's make a shadow-copy of home and link us in
+# Add missing folders to mounted home volume and link to run folder
+#  Do not link the modules folder so the module can be copied into the run folder
 echo "[*] Linking in user home"
 for p in database hak modules override portraits saves servervault tlk; do
   if [ ! -d $ROHOMEPATH/$p ]; then mkdir -v $ROHOMEPATH/$p; fi
-  if [ ! -e $HOMEPATH/$p ]; then ln -vs $ROHOMEPATH/$p $HOMEPATH/; fi
+  if [ ! -e $HOMEPATH/$p ] && [ $p != "modules" ]; then ln -vs $ROHOMEPATH/$p $HOMEPATH/; fi
 done
+
+# Add links for dialog[f].tlk
+echo "[*] Checking for dialog[f].tlk files"
 for p in dialog.tlk dialogf.tlk; do
-  if [ ! -L $HOMEPATH/$p ]; then ln -vs $ROHOMEPATH/$p $HOMEPATH/; fi
+  if [ -e $ROHOMEPATH/$p ]; then
+    if [ ! -L $HOMEPATH/$p ]; then ln -vs $ROHOMEPATH/$p $HOMEPATH/; fi
+  fi
 done
+
+# Copy module 
+echo "[*] Deploying module"
+if [ ! -d $HOMEPATH/modules ]; then mkdir -v $HOMEPATH/modules; fi
+if [ -e $ROHOMEPATH/modules/$NWN_MODULE.* ]; then 
+  cp -vf $ROHOMEPATH/modules/$NWN_MODULE.* $HOMEPATH/modules
+fi
 
 # Setup read-only copies of nwn and nwnplayer.ini
 echo "[*] Importing configuration"
