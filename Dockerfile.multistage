@@ -1,0 +1,53 @@
+FROM i386/debian:stretch-slim as builder
+
+ARG NWN_VERSION
+
+RUN apt-get update
+
+RUN apt-get -y install unzip
+RUN mkdir -p /nwn/nwnx
+ADD https://nwnx.io/nwnee-dedicated-${NWN_VERSION}.zip /nwn/tmp
+RUN unzip /nwn/tmp -d /nwn/data
+
+
+
+FROM i386/debian:stretch-slim
+LABEL maintainer "niv@beamdog.com"
+
+RUN apt-get update && \
+  apt-get --no-install-recommends -y install \
+    libc6:i386 libstdc++6:i386 && \
+  rm -r /var/cache/apt /var/lib/apt/lists
+
+# Data layout:
+# /nwn/data (/data/*.key) = distro data, minimized
+# /nwn/home               = readonly mounted from outside
+# /nwn/run                = runtime directory
+
+RUN mkdir -p /nwn/data
+RUN mkdir -p /nwn/home
+RUN mkdir -p /nwn/run
+
+# Copy the server binaries from builder image
+# Copy them in separate layers so we can store the big bad data
+# layer more efficiently.
+COPY --from=builder /nwn/data/data /nwn/data/data
+
+ENV NWN_ARCH linux-x86
+
+COPY --from=builder /nwn/data/bin/${NWN_ARCH} /nwn/data/bin/${NWN_ARCH}
+RUN chmod +x /nwn/data/bin/${NWN_ARCH}/nwserver-linux
+
+COPY /docker/run-server.sh /docker/prep-nwn-ini.awk /docker/prep-nwnplayer-ini.awk /nwn/
+RUN chmod +x /nwn/run-server.sh
+
+# /nwn/home: This should be mounted by the user.
+VOLUME /nwn/home
+
+EXPOSE ${NWN_PORT:-5121}/udp
+
+ENV NWN_TAIL_LOGS=y
+ENV NWN_EXTRA_ARGS="-userdirectory /nwn/run"
+
+WORKDIR /nwn/data/bin/${NWN_ARCH}
+ENTRYPOINT ["/nwn/run-server.sh"]
