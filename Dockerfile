@@ -24,7 +24,7 @@ ENV NWN_ARCH linux-x86
 COPY /nwserver/nwnee-dedicated/bin/${NWN_ARCH} /nwn/data/bin/${NWN_ARCH}
 RUN chmod +x /nwn/data/bin/${NWN_ARCH}/nwserver-linux
 
-COPY /run-server.sh /prep-nwn-ini.awk /prep-nwnplayer-ini.awk /nwn/
+COPY /docker/run-server.sh /docker/prep-nwn-ini.awk /docker/prep-nwnplayer-ini.awk /nwn/
 RUN chmod +x /nwn/run-server.sh
 
 # /nwn/home: This should be mounted by the user.
