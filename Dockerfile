@@ -36,4 +36,4 @@ ENV NWN_TAIL_LOGS=y
 ENV NWN_EXTRA_ARGS="-userdirectory /nwn/run"
 
 WORKDIR /nwn/data/bin/${NWN_ARCH}
-ENTRYPOINT ["/bin/bash", "/nwn/run-server.sh"]
+ENTRYPOINT ["/nwn/run-server.sh"]
