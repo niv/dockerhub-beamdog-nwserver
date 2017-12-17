@@ -15,6 +15,7 @@ The Docker Multistage build executes the following:
 * Sets the startup command
 
 Example
+
 `docker build -t nwserver:8152 --build-arg NWN_VERSION=8152 . -f Dockerfile.multistage`
 
 #### Docker Single Stage build
@@ -32,4 +33,5 @@ The Docker Single Stage build executes the following:
 Example
 
 `./scripts/get-nwserver.sh 8152`
+
 `docker build -t nwserver:8152  . -f Dockerfile`
