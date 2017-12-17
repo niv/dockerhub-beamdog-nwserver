@@ -17,11 +17,11 @@ RUN mkdir -p /nwn/run
 
 # Copy them in separate layers so we can store the big bad data
 # layer more efficiently.
-COPY /nwserver/nwnee-dedicated/data /nwn/data/data
+COPY /data/data /nwn/data/data
 
 ENV NWN_ARCH linux-x86
 
-COPY /nwserver/nwnee-dedicated/bin/${NWN_ARCH} /nwn/data/bin/${NWN_ARCH}
+COPY /data/bin/${NWN_ARCH} /nwn/data/bin/${NWN_ARCH}
 RUN chmod +x /nwn/data/bin/${NWN_ARCH}/nwserver-linux
 
 COPY /run-server.sh /prep-nwn-ini.awk /prep-nwnplayer-ini.awk /nwn/
