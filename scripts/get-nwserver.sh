@@ -6,6 +6,10 @@ if [ "$1" == "" ]; then
     exit 1
 fi
 
+if [ ! -d nwserver ]; then
+    mkdir nwserver
+fi
+
 pushd nwserver
 
 if [ ! -e nwnee-dedicated-$1.zip ]; then
