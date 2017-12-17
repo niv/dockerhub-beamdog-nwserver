@@ -1,4 +1,4 @@
-# Delcared here to be used by the FROM below
+# Declared here to be used by the FROM below
 ARG NWN_VERSION
 ARG NWN_TAG
 ARG NWN_VERSION_SUFFIX
