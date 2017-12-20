@@ -24,8 +24,8 @@ done
 # Copy module 
 echo "[*] Deploying module"
 if [ ! -d $HOMEPATH/modules ]; then mkdir -v $HOMEPATH/modules; fi
-if [ -e $ROHOMEPATH/modules/$NWN_MODULE.* ]; then 
-  cp -vf $ROHOMEPATH/modules/$NWN_MODULE.* $HOMEPATH/modules
+if [ -e "$ROHOMEPATH/modules/$NWN_MODULE.mod" ]; then 
+  cp -vf "$ROHOMEPATH/modules/$NWN_MODULE.mod" $HOMEPATH/modules
 fi
 
 # Setup read-only copies of nwn and nwnplayer.ini
