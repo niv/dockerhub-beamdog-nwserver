@@ -80,7 +80,9 @@ set -e
 # If this thing crashed, copy the log to the public home so the user
 # can deliberate over it.
 if ls $HOMEPATH/nwserver-crash* 1> /dev/null 2>&1; then
-  echo "The server crashed with return code "$RET". Trying to save crash data into your mounted server home."
-  cp -va $HOMEPATH/nwserver-crash*.log $ROHOMEPATH/ || true
+  echo "The server crashed with return code "$RET". Trying to save crash data into your mounted server home ./crash-$NWN_MODULE-$NWN_PORT."
+  if [ ! -d $ROHOMEPATH/crash-$NWN_MODULE-$NWN_PORT ]; then mkdir -v $ROHOMEPATH/crash-$NWN_MODULE-$NWN_PORT; fi
+  cp -fva $HOMEPATH/nwserver-crash*.log $ROHOMEPATH/crash-$NWN_MODULE-$NWN_PORT || true
+  cp -fva $HOMEPATH/logs.0/* $ROHOMEPATH/crash-$NWN_MODULE-$NWN_PORT || true
 fi
 exit $RET
