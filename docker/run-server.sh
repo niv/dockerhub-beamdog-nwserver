@@ -61,14 +61,14 @@ LD_PRELOAD=$NWN_LD_PRELOAD LD_LIBRARY_PATH=$NWN_LD_LIBRARY_PATH ./nwserver-linux
   -maxclients "${NWN_MAXCLIENTS:-96}" \
   -minlevel "${NWN_MINLEVEL:-1}" \
   -maxlevel "${NWN_MAXLEVEL:-40}" \
-  -pauseandplay "${NWN_PAUSEANDPLAY:-1}" \
+  -pauseandplay "${NWN_PAUSEANDPLAY:-0}" \
   -pvp "${NWN_PVP:-2}" \
   -servervault "${NWN_SERVERVAULT:-1}" \
   -elc "${NWN_ELC:-1}" \
   -ilr "${NWN_ILR:-1}" \
   -gametype "${NWN_GAMETYPE:-0}" \
-  -oneparty "${NWN_ONEPARTY:-0}" \
-  -difficulty "${NWN_DIFFICULTY:-3}" \
+  -oneparty "${NWN_ONEPARTY:-1}" \
+  -difficulty "${NWN_DIFFICULTY:-2}" \
   -autosaveinterval "${NWN_AUTOSAVEINTERVAL:-0}" \
   -playerpassword "${NWN_PLAYERPASSWORD}" \
   -dmpassword "${NWN_DMPASSWORD}" \
