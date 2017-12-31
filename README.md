@@ -16,7 +16,10 @@ The Docker Multistage build executes the following:
 
 Example
 
-`docker build -t nwserver:8152 --build-arg NWN_VERSION=8152 . -f Dockerfile.multistage`
+* Using provided shell script to build image
+	`./scripts/build-nwserver-image.sh -t glorwinger/nwserver:8152 -v 8152`
+* Using command line docker build
+	`docker build -t nwserver:8152 --build-arg NWN_VERSION=8152 . -f Dockerfile.nwserver`
 
 #### Docker Single Stage build
 
@@ -32,9 +35,12 @@ The Docker Single Stage build executes the following:
 
 Example
 
-`./scripts/get-nwserver.sh 8152`
-
-`docker build -t nwserver:8152  . -f Dockerfile`
+* Execute the script to pull the dedicated server
+	`./scripts/get-nwserver.sh 8152`
+* Using provided shell script to build image
+	`./scripts/build-nwserver-image.sh -l -t glorwinger/nwserver:8152 -v 8152`
+* Using command line docker build
+	`docker build -t nwserver:8152  . -f Dockerfile.nwserver.local`
 
 ## Neverwinter Nights Enhanced Edition NWNX Docker Image
 
@@ -56,5 +62,18 @@ The Docker Multistage build executes the following:
 * Sets the startup command
 
 Example
-`docker build -t glorwinger/nwserver:8152.bd.i386.nwnx --build-arg NWN_VERSION=8152 --build-arg NWN_TAG=glorwinger/nwserver --build-arg NWN_VERSION_SUFFIX=.bd.i386 . -f Dockerfile`
+
+##### Build with NWNX CI / CD NWNX binaries
+* Using provided shell script to build image
+	`./scripts/build-nwnx-image.sh -t glorwinger/nwserver:8152.1.nwnx -v 8152 -r glorwinger/nwserver -s .1`
+* Using command line docker build
+	`docker build -t glorwinger/nwserver:8152.bd.i386.nwnx --build-arg NWN_VERSION=8152 --build-arg NWN_TAG=glorwinger/nwserver --build-arg NWN_VERSION_SUFFIX=.1 . -f Dockerfile.nwnx`
+
+##### Build with local NWNX binaries in Binaries folder
+
+* Using provided shell script to build image
+	`./scripts/build-nwnx-image.sh -l -t glorwinger/nwserver:8152.1.nwnx -v 8152 -r glorwinger/nwserver -s .1`
+* Using command line docker build
+	`docker build -t glorwinger/nwserver:8152.bd.i386.nwnx --build-arg NWN_VERSION=8152 --build-arg NWN_TAG=glorwinger/nwserver --build-arg NWN_VERSION_SUFFIX=.1 . -f Dockerfile.nwnx.local`
+
 
