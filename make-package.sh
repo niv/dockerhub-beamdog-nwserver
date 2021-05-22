@@ -22,13 +22,16 @@ cp -va "$NWN_ROOT"/lang/en/data/dialog.tlk data/lang/en/data/
 cp -va "$NWN_ROOT"/data/cacert.pem data/data/
 nwn_resman_pkg --verbose -d data/data --root "$NWN_ROOT"
 
-docker build --pull --no-cache -t beamdog/nwserver:$TAG -f Dockerfile .
-docker tag beamdog/nwserver:$TAG beamdog/nwserver:latest
+docker build --pull --no-cache -f Dockerfile --build-arg IMAGE=debian:buster-slim -t beamdog/nwserver:$TAG-debian-buster -t beamdog/nwserver:$TAG -t beamdog/nwserver:latest .
+docker build --pull --no-cache -f Dockerfile --build-arg IMAGE=ubuntu:focal -t beamdog/nwserver:$TAG-ubuntu-focal .
+
 set +x
 
 echo ""
 echo "All done, now verify the images and then run to push:"
+echo " beamdog/nwserver:latest"
 echo " docker push beamdog/nwserver:$TAG"
-echo " docker push beamdog/nwserver:latest"
+echo " docker push beamdog/nwserver:$TAG-debian-buster"
+echo " docker push beamdog/nwserver:$TAG-ubuntu-focal"
 echo ""
 echo "Don't forget to update the master branch."
