@@ -1,4 +1,5 @@
-FROM debian:buster-slim
+ARG IMAGE=debian:buster-slim
+FROM $IMAGE
 LABEL maintainer "niv@beamdog.com"
 
 RUN apt-get update && \
